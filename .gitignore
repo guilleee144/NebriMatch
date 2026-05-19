@@ -1,0 +1,171 @@
+# ══════════════════════════════════════════════
+#   NebriMatch — .gitignore
+#   Cubre: React Native (app/) + Next.js (web/)
+# ══════════════════════════════════════════════
+
+
+# ─────────────────────────────────────────────
+# DEPENDENCIAS — Node
+# ─────────────────────────────────────────────
+node_modules/
+.pnp
+.pnp.js
+.yarn/install-state.gz
+
+
+# ─────────────────────────────────────────────
+# VARIABLES DE ENTORNO — MUY IMPORTANTE
+# Nunca subas claves de Firebase ni APIs
+# ─────────────────────────────────────────────
+.env
+.env.local
+.env.development
+.env.development.local
+.env.test
+.env.test.local
+.env.production
+.env.production.local
+*.env
+google-services.json
+GoogleService-Info.plist
+
+
+# ─────────────────────────────────────────────
+# NEXT.JS (web/)
+# ─────────────────────────────────────────────
+.next/
+out/
+build/
+dist/
+
+
+# ─────────────────────────────────────────────
+# REACT NATIVE (app/)
+# ─────────────────────────────────────────────
+
+# Metro bundler
+.metro-health-check*
+
+# Expo (si se usa)
+.expo/
+.expo-shared/
+dist/
+web-build/
+
+# Android
+app/android/app/debug/
+app/android/app/release/
+app/android/.gradle/
+app/android/build/
+app/android/local.properties
+app/android/captures/
+app/android/.externalNativeBuild/
+app/android/.cxx/
+*.apk
+*.aab
+*.keystore
+!debug.keystore
+
+# iOS
+app/ios/build/
+app/ios/Pods/
+app/ios/*.xcworkspace/xcuserdata/
+app/ios/*.xcodeproj/xcuserdata/
+app/ios/*.xcodeproj/project.xcworkspace/xcshareddata/
+*.ipa
+*.dSYM.zip
+*.dSYM
+DerivedData/
+
+
+# ─────────────────────────────────────────────
+# FIREBASE
+# ─────────────────────────────────────────────
+.firebase/
+firebase-debug.log
+firestore-debug.log
+ui-debug.log
+database-debug.log
+.firebaserc
+
+
+# ─────────────────────────────────────────────
+# SISTEMA OPERATIVO
+# ─────────────────────────────────────────────
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+*~
+
+
+# ─────────────────────────────────────────────
+# EDITORES E IDEs
+# ─────────────────────────────────────────────
+
+# VSCode
+.vscode/
+!.vscode/extensions.json
+!.vscode/settings.json
+
+# JetBrains (WebStorm, IntelliJ)
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# Vim / Emacs
+*.swp
+*.swo
+*~
+\#*\#
+
+
+# ─────────────────────────────────────────────
+# LOGS Y TEMPORALES
+# ─────────────────────────────────────────────
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+*.pid
+*.seed
+*.pid.lock
+.tmp/
+tmp/
+temp/
+
+
+# ─────────────────────────────────────────────
+# TESTING Y COBERTURA
+# ─────────────────────────────────────────────
+coverage/
+.nyc_output/
+*.lcov
+.jest-cache/
+
+
+# ─────────────────────────────────────────────
+# MISC
+# ─────────────────────────────────────────────
+*.tsbuildinfo
+.cache/
+.parcel-cache/
+.turbo/
+.vercel/
