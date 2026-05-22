@@ -1,0 +1,69 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  
+  --color-primary: #0052FF; /* Azul eléctrico */
+  --color-secondary: #8B5CF6; /* Violeta */
+  --color-accent-green: #10B981; /* Verde matches */
+  --color-accent-pink: #EC4899; /* Rosa conectar */
+  --color-accent-yellow: #F59E0B; /* Amarillo notif */
+  
+  --color-dark-bg: #09090b; /* Negro premium */
+  --color-dark-surface: #18181b;
+  --color-dark-border: #27272a;
+  
+  --font-sans: var(--font-inter), sans-serif;
+}
+
+:root {
+  --background: #ffffff;
+  --foreground: #09090b;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #09090b;
+    --foreground: #fafafa;
+  }
+}
+
+/* Force Dark Mode for this premium app since it's "Silicon Valley startup" vibe, 
+   but we'll allow system preference while keeping a dark theme as default.
+   Actually, let's just make the default theme dark. */
+:root {
+  --background: #050505; /* Deep black for premium feel */
+  --foreground: #f4f4f5;
+  color-scheme: dark;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Utilities for glassmorphism */
+@utility glass {
+  background: rgba(24, 24, 27, 0.4);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+@utility glass-card {
+  background: rgba(24, 24, 27, 0.6);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+}
+
+@utility text-gradient {
+  background: linear-gradient(to right, #0052FF, #8B5CF6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
