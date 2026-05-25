@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { SectionWrapper } from "../SectionWrapper";
 import Link from "next/link";
+import { useAuth } from "@/context/AuthContext";
 
 export function Stats() {
   const stats = [
@@ -38,6 +39,7 @@ export function Stats() {
 }
 
 export function CTA() {
+  const { user } = useAuth();
   return (
     <SectionWrapper id="cta" className="relative overflow-hidden text-center">
       {/* Background Effect */}
@@ -54,12 +56,21 @@ export function CTA() {
         </p>
         
         <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
-          <Link
-            href="/register"
-            className="px-8 py-4 bg-white text-black font-semibold rounded-full hover:scale-105 transition-transform text-center flex items-center justify-center shadow-[0_0_30px_rgba(255,255,255,0.1)] hover:shadow-[0_0_30px_rgba(255,255,255,0.2)]"
-          >
-            Unirse ahora gratis
-          </Link>
+          {user ? (
+            <Link
+              href="/dashboard"
+              className="px-8 py-4 bg-gradient-to-r from-[#0052FF] to-[#8B5CF6] text-white font-semibold rounded-full hover:scale-105 transition-transform text-center flex items-center justify-center shadow-[0_0_30px_rgba(0,82,255,0.3)]"
+            >
+              Ir a la aplicación
+            </Link>
+          ) : (
+            <Link
+              href="/register"
+              className="px-8 py-4 bg-white text-black font-semibold rounded-full hover:scale-105 transition-transform text-center flex items-center justify-center shadow-[0_0_30px_rgba(255,255,255,0.1)] hover:shadow-[0_0_30px_rgba(255,255,255,0.2)]"
+            >
+              Unirse ahora gratis
+            </Link>
+          )}
           <button
             className="px-8 py-4 glass text-white font-medium rounded-full hover:bg-white/10 transition-colors text-center"
           >

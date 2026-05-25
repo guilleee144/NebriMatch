@@ -5,8 +5,10 @@ import { SectionWrapper } from "../SectionWrapper";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { CheckCircle2, Briefcase, MapPin, Sparkles, X } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
 
 export function Hero() {
+  const { user } = useAuth();
   const [showNotification, setShowNotification] = useState(false);
 
   useEffect(() => {
@@ -56,12 +58,21 @@ export function Hero() {
             transition={{ duration: 0.6, delay: 0.3 }}
             className="flex flex-col sm:flex-row items-center gap-4 pt-4"
           >
-            <Link
-              href="/register"
-              className="w-full sm:w-auto px-8 py-4 bg-white text-black font-semibold rounded-full hover:scale-105 transition-transform text-center flex items-center justify-center gap-2 shadow-[0_0_40px_rgba(255,255,255,0.1)] hover:shadow-[0_0_40px_rgba(255,255,255,0.2)]"
-            >
-              Empieza ahora
-            </Link>
+            {user ? (
+              <Link
+                href="/dashboard"
+                className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-[#0052FF] to-[#8B5CF6] text-white font-semibold rounded-full hover:scale-105 transition-transform text-center flex items-center justify-center gap-2 shadow-[0_0_40px_rgba(0,82,255,0.3)]"
+              >
+                Ir a la aplicación
+              </Link>
+            ) : (
+              <Link
+                href="/register"
+                className="w-full sm:w-auto px-8 py-4 bg-white text-black font-semibold rounded-full hover:scale-105 transition-transform text-center flex items-center justify-center gap-2 shadow-[0_0_40px_rgba(255,255,255,0.1)] hover:shadow-[0_0_40px_rgba(255,255,255,0.2)]"
+              >
+                Empieza ahora
+              </Link>
+            )}
             <Link
               href="#producto"
               onClick={(e) => {

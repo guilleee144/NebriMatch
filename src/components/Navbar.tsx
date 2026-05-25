@@ -3,11 +3,14 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Menu, X } from "lucide-react";
+import { Menu, X, LogOut, LayoutDashboard } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
 
 export function Navbar() {
+  const { user, logout } = useAuth();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -16,6 +19,15 @@ export function Navbar() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  const getInitials = (name: string) => {
+    return name
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase()
+      .substring(0, 2);
+  };
 
   return (
     <header
@@ -45,17 +57,77 @@ export function Navbar() {
           </Link>
         </nav>
 
-        {/* Desktop CTA */}
-        <div className="hidden md:flex items-center gap-6">
-          <Link href="/login" className="text-sm font-medium text-zinc-300 hover:text-white transition-colors">
-            Iniciar sesión
-          </Link>
-          <Link
-            href="/register"
-            className="bg-white text-black hover:bg-zinc-200 transition-colors py-1.5 px-4 rounded-full text-sm font-semibold"
-          >
-            Empieza ahora
-          </Link>
+        {/* Desktop CTA / User Menu */}
+        <div className="hidden md:flex items-center gap-6 relative">
+          {user ? (
+            <div className="relative">
+              <button
+                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                className="flex items-center gap-2 focus:outline-none group cursor-pointer"
+              >
+                <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-[#0052FF] to-[#8B5CF6] flex items-center justify-center text-white font-semibold text-sm border border-white/10 group-hover:border-white/30 transition-all shadow-[0_0_15px_rgba(0,82,255,0.3)]">
+                  {getInitials(user.name)}
+                </div>
+              </button>
+
+              {/* Dropdown Menu */}
+              {isDropdownOpen && (
+                <>
+                  <div
+                    className="fixed inset-0 z-40"
+                    onClick={() => setIsDropdownOpen(false)}
+                  />
+                  <motion.div
+                    initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    className="absolute right-0 mt-3 w-56 rounded-2xl border border-white/10 shadow-[0_10px_40px_rgba(0,0,0,0.5)] z-50 py-2 overflow-hidden bg-[#09090b]/95 backdrop-blur-xl"
+                  >
+                    <div className="px-4 py-3 border-b border-white/5">
+                      <p className="text-sm font-semibold text-white truncate">
+                        {user.name}
+                      </p>
+                      <p className="text-xs text-zinc-400 truncate mt-0.5">
+                        {user.email}
+                      </p>
+                    </div>
+                    
+                    <div className="p-1.5 space-y-1">
+                      <Link
+                        href="/dashboard"
+                        onClick={() => setIsDropdownOpen(false)}
+                        className="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium text-zinc-300 hover:text-white hover:bg-white/5 transition-colors"
+                      >
+                        <LayoutDashboard size={16} className="text-[#0052FF]" />
+                        Ir a la aplicación
+                      </Link>
+                      <button
+                        onClick={async () => {
+                          setIsDropdownOpen(false);
+                          await logout();
+                        }}
+                        className="flex w-full items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-colors cursor-pointer"
+                      >
+                        <LogOut size={16} />
+                        Cerrar sesión
+                      </button>
+                    </div>
+                  </motion.div>
+                </>
+              )}
+            </div>
+          ) : (
+            <>
+              <Link href="/login" className="text-sm font-medium text-zinc-300 hover:text-white transition-colors">
+                Iniciar sesión
+              </Link>
+              <Link
+                href="/register"
+                className="bg-white text-black hover:bg-zinc-200 transition-colors py-1.5 px-4 rounded-full text-sm font-semibold"
+              >
+                Empieza ahora
+              </Link>
+            </>
+          )}
         </div>
 
         {/* Mobile Menu Toggle */}
@@ -72,7 +144,7 @@ export function Navbar() {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="absolute top-0 left-0 w-full h-screen bg-[#050505]/95 backdrop-blur-xl flex flex-col items-center justify-center gap-8 z-40"
+            className="absolute top-0 left-0 w-full h-screen bg-[#050505]/95 backdrop-blur-xl flex flex-col items-center justify-center gap-6 z-40"
           >
             <Link href="#producto" onClick={() => setIsMobileMenuOpen(false)} className="text-2xl font-medium text-zinc-300 hover:text-white">
               Producto
@@ -83,16 +155,53 @@ export function Navbar() {
             <Link href="#comunidad" onClick={() => setIsMobileMenuOpen(false)} className="text-2xl font-medium text-zinc-300 hover:text-white">
               Comunidad
             </Link>
-            <Link href="/login" onClick={() => setIsMobileMenuOpen(false)} className="text-2xl font-medium text-zinc-300 hover:text-white mt-4">
-              Iniciar sesión
-            </Link>
-            <Link
-              href="/register"
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="bg-white text-black py-3 px-8 rounded-full text-lg font-semibold mt-4"
-            >
-              Empieza ahora
-            </Link>
+            
+            {user ? (
+              <div className="flex flex-col items-center gap-5 mt-4 w-full px-6 max-w-xs">
+                <div className="flex flex-col items-center gap-1">
+                  <div className="w-14 h-14 rounded-full bg-gradient-to-tr from-[#0052FF] to-[#8B5CF6] flex items-center justify-center text-white font-bold text-lg border border-white/10 shadow-[0_0_20px_rgba(0,82,255,0.4)]">
+                    {getInitials(user.name)}
+                  </div>
+                  <div className="text-center mt-2">
+                    <p className="text-lg font-bold text-white">{user.name}</p>
+                    <p className="text-xs text-zinc-400 mt-0.5">{user.email}</p>
+                  </div>
+                </div>
+                
+                <Link
+                  href="/dashboard"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="w-full flex items-center justify-center gap-2 bg-white text-black py-2.5 px-6 rounded-full text-base font-semibold shadow-[0_0_30px_rgba(255,255,255,0.1)]"
+                >
+                  <LayoutDashboard size={18} />
+                  Ir a la aplicación
+                </Link>
+                
+                <button
+                  onClick={async () => {
+                    setIsMobileMenuOpen(false);
+                    await logout();
+                  }}
+                  className="w-full flex items-center justify-center gap-2 border border-red-500/20 bg-red-500/10 text-red-400 hover:bg-red-500/20 py-2.5 px-6 rounded-full text-base font-semibold transition-colors cursor-pointer"
+                >
+                  <LogOut size={18} />
+                  Cerrar sesión
+                </button>
+              </div>
+            ) : (
+              <>
+                <Link href="/login" onClick={() => setIsMobileMenuOpen(false)} className="text-2xl font-medium text-zinc-300 hover:text-white mt-4">
+                  Iniciar sesión
+                </Link>
+                <Link
+                  href="/register"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="bg-white text-black py-3 px-8 rounded-full text-lg font-semibold mt-4"
+                >
+                  Empieza ahora
+                </Link>
+              </>
+            )}
           </motion.div>
         )}
       </div>

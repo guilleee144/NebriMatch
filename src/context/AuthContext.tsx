@@ -36,13 +36,30 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const router = useRouter();
 
   useEffect(() => {
+    // Verificar localStorage inmediatamente al montar el componente en el cliente
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      try {
+        setUser(JSON.parse(storedUser));
+      } catch (e) {
+        console.error("Error al analizar el usuario de localStorage:", e);
+      }
+    }
+
+    // Validar y sincronizar con la API en segundo plano
     fetch("/api/auth/me")
       .then((res) => {
         if (res.ok) return res.json();
-        throw new Error("Not authenticated");
+        throw new Error("No autenticado");
       })
-      .then((data) => setUser(data.user))
-      .catch(() => setUser(null))
+      .then((data) => {
+        setUser(data.user);
+        localStorage.setItem("user", JSON.stringify(data.user));
+      })
+      .catch(() => {
+        setUser(null);
+        localStorage.removeItem("user");
+      })
       .finally(() => setLoading(false));
   }, []);
 
@@ -55,8 +72,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       });
       const data = await res.json();
       if (!res.ok) return { error: data.error };
+      
       setUser(data.user);
-      router.push("/");
+      localStorage.setItem("user", JSON.stringify(data.user));
+      router.push("/dashboard");
       router.refresh();
       return {};
     },
@@ -72,8 +91,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       });
       const data = await res.json();
       if (!res.ok) return { error: data.error };
+
       setUser(data.user);
-      router.push("/");
+      localStorage.setItem("user", JSON.stringify(data.user));
+      router.push("/dashboard");
       router.refresh();
       return {};
     },
@@ -83,6 +104,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const logout = useCallback(async () => {
     await fetch("/api/auth/logout", { method: "POST" });
     setUser(null);
+    localStorage.removeItem("user");
     router.push("/login");
     router.refresh();
   }, [router]);
