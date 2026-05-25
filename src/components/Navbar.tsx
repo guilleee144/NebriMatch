@@ -60,7 +60,7 @@ export function Navbar() {
         {/* Desktop CTA / User Menu */}
         <div className="hidden md:flex items-center gap-6 relative">
           {user ? (
-            <div className="relative">
+            <div className="relative z-50">
               <button
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                 className="flex items-center gap-2 focus:outline-none group cursor-pointer"

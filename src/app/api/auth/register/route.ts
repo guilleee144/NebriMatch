@@ -21,7 +21,7 @@ export async function POST(req: Request) {
       );
     }
 
-    const existing = findUserByEmail(email);
+    const existing = await findUserByEmail(email);
     if (existing) {
       return NextResponse.json(
         { error: "El email ya está registrado" },
@@ -38,7 +38,7 @@ export async function POST(req: Request) {
       createdAt: new Date().toISOString(),
     };
 
-    createUser(user);
+    await createUser(user);
 
     const token = await createToken({ userId: user.id, email: user.email });
 

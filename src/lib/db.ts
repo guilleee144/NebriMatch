@@ -1,3 +1,4 @@
+import clientPromise from "./mongodb";
 import fs from "fs";
 import path from "path";
 
@@ -11,37 +12,58 @@ export interface StoredUser {
 
 const DB_PATH = path.join(process.cwd(), "data", "users.json");
 
-function ensureDb(): void {
-  const dir = path.dirname(DB_PATH);
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir, { recursive: true });
+// Helper para migrar datos de JSON a MongoDB si la base de datos está vacía
+async function ensureMigrated(): Promise<void> {
+  try {
+    const client = await clientPromise;
+    const db = client.db();
+    const collection = db.collection<StoredUser>("users");
+    const count = await collection.countDocuments();
+    
+    if (count === 0 && fs.existsSync(DB_PATH)) {
+      const data = fs.readFileSync(DB_PATH, "utf-8");
+      const localUsers: StoredUser[] = JSON.parse(data);
+      if (localUsers.length > 0) {
+        console.log(`[Migration] Migrando ${localUsers.length} usuarios a MongoDB Atlas...`);
+        // Asegurar índice único en email antes de insertar
+        await collection.createIndex({ email: 1 }, { unique: true });
+        await collection.insertMany(localUsers);
+        console.log("[Migration] ¡Migración completada con éxito!");
+      }
+    }
+  } catch (err) {
+    console.error("Error durante la migración de datos:", err);
   }
-  if (!fs.existsSync(DB_PATH)) {
-    fs.writeFileSync(DB_PATH, "[]", "utf-8");
-  }
 }
 
-export function readUsers(): StoredUser[] {
-  ensureDb();
-  const data = fs.readFileSync(DB_PATH, "utf-8");
-  return JSON.parse(data);
+// Ejecutar migración al importar el módulo
+ensureMigrated().catch(console.error);
+
+export async function getUsersCollection() {
+  const client = await clientPromise;
+  return client.db().collection<StoredUser>("users");
 }
 
-export function writeUsers(users: StoredUser[]): void {
-  ensureDb();
-  fs.writeFileSync(DB_PATH, JSON.stringify(users, null, 2), "utf-8");
+export async function readUsers(): Promise<StoredUser[]> {
+  const collection = await getUsersCollection();
+  return collection.find({}).toArray();
 }
 
-export function findUserByEmail(email: string): StoredUser | undefined {
-  return readUsers().find((u) => u.email === email);
+export async function findUserByEmail(email: string): Promise<StoredUser | undefined> {
+  const collection = await getUsersCollection();
+  const user = await collection.findOne({ email });
+  return user || undefined;
 }
 
-export function findUserById(id: string): StoredUser | undefined {
-  return readUsers().find((u) => u.id === id);
+export async function findUserById(id: string): Promise<StoredUser | undefined> {
+  const collection = await getUsersCollection();
+  const user = await collection.findOne({ id });
+  return user || undefined;
 }
 
-export function createUser(user: StoredUser): void {
-  const users = readUsers();
-  users.push(user);
-  writeUsers(users);
+export async function createUser(user: StoredUser): Promise<void> {
+  const collection = await getUsersCollection();
+  // Asegurar el índice único para el campo email
+  await collection.createIndex({ email: 1 }, { unique: true });
+  await collection.insertOne(user);
 }
