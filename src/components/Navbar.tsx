@@ -2,15 +2,18 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
 import { Menu, X, LogOut, LayoutDashboard, Settings } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 
 export function Navbar() {
   const { user, logout } = useAuth();
+  const pathname = usePathname();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -19,6 +22,26 @@ export function Navbar() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  useEffect(() => {
+    if (!user) return;
+
+    const fetchUnread = async () => {
+      try {
+        const res = await fetch("/api/messages/unread");
+        if (res.ok) {
+          const data = await res.json();
+          setUnreadCount(data.count || 0);
+        }
+      } catch (err) {
+        console.error("Error fetching unread count:", err);
+      }
+    };
+
+    fetchUnread();
+    const interval = setInterval(fetchUnread, 10000);
+    return () => clearInterval(interval);
+  }, [user]);
 
   const getInitials = (name: string) => {
     return name
@@ -46,15 +69,45 @@ export function Navbar() {
 
         {/* Desktop Nav */}
         <nav className="hidden md:flex items-center gap-8">
-          <Link href="#producto" className="text-sm font-medium text-zinc-400 hover:text-white transition-colors">
-            Producto
-          </Link>
-          <Link href="#funcionalidades" className="text-sm font-medium text-zinc-400 hover:text-white transition-colors">
-            Funcionalidades
-          </Link>
-          <Link href="#comunidad" className="text-sm font-medium text-zinc-400 hover:text-white transition-colors">
-            Comunidad
-          </Link>
+          {user ? (
+            <>
+              <div className="relative">
+                <Link 
+                  href="/chat" 
+                  className={`text-sm font-medium transition-colors ${
+                    pathname === "/chat" ? "text-white border-b-2 border-[#0052FF]" : "text-zinc-400 hover:text-white"
+                  }`}
+                >
+                  Chat
+                </Link>
+                {unreadCount > 0 && (
+                  <span className="absolute -top-1.5 -right-3.5 inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 text-[10px] font-bold text-white bg-red-600 rounded-full leading-none">
+                    {unreadCount > 9 ? '9+' : unreadCount}
+                  </span>
+                )}
+              </div>
+              <Link 
+                href="/matches" 
+                className={`text-sm font-medium transition-colors ${
+                  pathname === "/matches" ? "text-white border-b-2 border-[#0052FF]" : "text-zinc-400 hover:text-white"
+                }`}
+              >
+                Matches
+              </Link>
+            </>
+          ) : (
+            <>
+              <Link href="#producto" className="text-sm font-medium text-zinc-400 hover:text-white transition-colors">
+                Producto
+              </Link>
+              <Link href="#funcionalidades" className="text-sm font-medium text-zinc-400 hover:text-white transition-colors">
+                Funcionalidades
+              </Link>
+              <Link href="#comunidad" className="text-sm font-medium text-zinc-400 hover:text-white transition-colors">
+                Comunidad
+              </Link>
+            </>
+          )}
         </nav>
 
         {/* Desktop CTA / User Menu */}
@@ -159,15 +212,47 @@ export function Navbar() {
             exit={{ opacity: 0, y: -20 }}
             className="absolute top-0 left-0 w-full h-screen bg-[#050505]/95 backdrop-blur-xl flex flex-col items-center justify-center gap-6 z-40"
           >
-            <Link href="#producto" onClick={() => setIsMobileMenuOpen(false)} className="text-2xl font-medium text-zinc-300 hover:text-white">
-              Producto
-            </Link>
-            <Link href="#funcionalidades" onClick={() => setIsMobileMenuOpen(false)} className="text-2xl font-medium text-zinc-300 hover:text-white">
-              Funcionalidades
-            </Link>
-            <Link href="#comunidad" onClick={() => setIsMobileMenuOpen(false)} className="text-2xl font-medium text-zinc-300 hover:text-white">
-              Comunidad
-            </Link>
+            {user ? (
+              <>
+                <div className="relative inline-block">
+                  <Link 
+                    href="/chat" 
+                    onClick={() => setIsMobileMenuOpen(false)} 
+                    className={`text-2xl font-medium transition-colors ${
+                      pathname === "/chat" ? "text-white" : "text-zinc-400 hover:text-white"
+                    }`}
+                  >
+                    Chat
+                  </Link>
+                  {unreadCount > 0 && (
+                    <span className="absolute -top-2 -right-6 inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 text-[10px] font-bold text-white bg-red-600 rounded-full leading-none">
+                      {unreadCount > 9 ? '9+' : unreadCount}
+                    </span>
+                  )}
+                </div>
+                <Link 
+                  href="/matches" 
+                  onClick={() => setIsMobileMenuOpen(false)} 
+                  className={`text-2xl font-medium transition-colors ${
+                    pathname === "/matches" ? "text-white" : "text-zinc-400 hover:text-white"
+                  }`}
+                >
+                  Matches
+                </Link>
+              </>
+            ) : (
+              <>
+                <Link href="#producto" onClick={() => setIsMobileMenuOpen(false)} className="text-2xl font-medium text-zinc-300 hover:text-white">
+                  Producto
+                </Link>
+                <Link href="#funcionalidades" onClick={() => setIsMobileMenuOpen(false)} className="text-2xl font-medium text-zinc-300 hover:text-white">
+                  Funcionalidades
+                </Link>
+                <Link href="#comunidad" onClick={() => setIsMobileMenuOpen(false)} className="text-2xl font-medium text-zinc-300 hover:text-white">
+                  Comunidad
+                </Link>
+              </>
+            )}
             
             {user ? (
               <div className="flex flex-col items-center gap-5 mt-4 w-full px-6 max-w-xs">
