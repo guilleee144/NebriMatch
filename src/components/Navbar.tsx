@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Menu, X, LogOut, LayoutDashboard } from "lucide-react";
+import { Menu, X, LogOut, LayoutDashboard, Settings } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 
 export function Navbar() {
@@ -65,8 +65,13 @@ export function Navbar() {
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                 className="flex items-center gap-2 focus:outline-none group cursor-pointer"
               >
-                <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-[#0052FF] to-[#8B5CF6] flex items-center justify-center text-white font-semibold text-sm border border-white/10 group-hover:border-white/30 transition-all shadow-[0_0_15px_rgba(0,82,255,0.3)]">
-                  {getInitials(user.name)}
+                <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-[#0052FF] to-[#8B5CF6] flex items-center justify-center text-white font-semibold text-sm border border-white/10 group-hover:border-white/30 transition-all shadow-[0_0_15px_rgba(0,82,255,0.3)] overflow-hidden">
+                  {user.profile_picture ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={user.profile_picture} alt={user.name} className="w-full h-full object-cover" />
+                  ) : (
+                    getInitials(user.name)
+                  )}
                 </div>
               </button>
 
@@ -99,6 +104,14 @@ export function Navbar() {
                       >
                         <LayoutDashboard size={16} className="text-[#0052FF]" />
                         Ir a la aplicación
+                      </Link>
+                      <Link
+                        href="/settings"
+                        onClick={() => setIsDropdownOpen(false)}
+                        className="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium text-zinc-300 hover:text-white hover:bg-white/5 transition-colors"
+                      >
+                        <Settings size={16} className="text-[#8B5CF6]" />
+                        Ajustes de perfil
                       </Link>
                       <button
                         onClick={async () => {
@@ -159,8 +172,13 @@ export function Navbar() {
             {user ? (
               <div className="flex flex-col items-center gap-5 mt-4 w-full px-6 max-w-xs">
                 <div className="flex flex-col items-center gap-1">
-                  <div className="w-14 h-14 rounded-full bg-gradient-to-tr from-[#0052FF] to-[#8B5CF6] flex items-center justify-center text-white font-bold text-lg border border-white/10 shadow-[0_0_20px_rgba(0,82,255,0.4)]">
-                    {getInitials(user.name)}
+                  <div className="w-14 h-14 rounded-full bg-gradient-to-tr from-[#0052FF] to-[#8B5CF6] flex items-center justify-center text-white font-bold text-lg border border-white/10 shadow-[0_0_20px_rgba(0,82,255,0.4)] overflow-hidden">
+                    {user.profile_picture ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={user.profile_picture} alt={user.name} className="w-full h-full object-cover" />
+                    ) : (
+                      getInitials(user.name)
+                    )}
                   </div>
                   <div className="text-center mt-2">
                     <p className="text-lg font-bold text-white">{user.name}</p>
@@ -175,6 +193,15 @@ export function Navbar() {
                 >
                   <LayoutDashboard size={18} />
                   Ir a la aplicación
+                </Link>
+                
+                <Link
+                  href="/settings"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="w-full flex items-center justify-center gap-2 border border-white/10 bg-white/5 text-white py-2.5 px-6 rounded-full text-base font-semibold transition-colors"
+                >
+                  <Settings size={18} className="text-[#8B5CF6]" />
+                  Ajustes de perfil
                 </Link>
                 
                 <button

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { comparePassword, createToken } from "@/lib/auth";
-import { findUserByEmail } from "@/lib/db";
+import { findUserByEmail, findUserDataByEmail } from "@/lib/db";
 
 export async function POST(req: Request) {
   try {
@@ -31,8 +31,17 @@ export async function POST(req: Request) {
 
     const token = await createToken({ userId: user.id, email: user.email });
 
+    const userData = await findUserDataByEmail(user.email);
+
     const response = NextResponse.json(
-      { user: { id: user.id, name: user.name, email: user.email } },
+      { 
+        user: { 
+          id: user.id, 
+          name: user.name, 
+          email: user.email,
+          profile_picture: userData?.profile_picture || "",
+        } 
+      },
       { status: 200 }
     );
     response.cookies.set("token", token, {

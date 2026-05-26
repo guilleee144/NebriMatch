@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import crypto from "crypto";
 import { hashPassword, createToken } from "@/lib/auth";
-import { findUserByEmail, createUser } from "@/lib/db";
+import { findUserByEmail, createUser, createUserData } from "@/lib/db";
 
 export async function POST(req: Request) {
   try {
@@ -39,6 +39,16 @@ export async function POST(req: Request) {
     };
 
     await createUser(user);
+
+    // Inicializar perfil en user_data con los campos solicitados
+    await createUserData({
+      email: user.email,
+      description: "",
+      profile_picture: "",
+      "empresa/centro_estudios": "",
+      edad: null,
+      ciudad: "",
+    });
 
     const token = await createToken({ userId: user.id, email: user.email });
 

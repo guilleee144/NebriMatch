@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verifyToken } from "@/lib/auth";
-import { findUserById } from "@/lib/db";
+import { findUserByEmail, findUserDataByEmail } from "@/lib/db";
 
 export async function GET(req: NextRequest) {
   try {
@@ -14,13 +14,22 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: "Token inválido" }, { status: 401 });
     }
 
-    const user = await findUserById(payload.userId);
+    const user = await findUserByEmail(payload.email);
     if (!user) {
       return NextResponse.json({ error: "Usuario no encontrado" }, { status: 404 });
     }
 
+    const userData = await findUserDataByEmail(user.email);
+
     return NextResponse.json(
-      { user: { id: user.id, name: user.name, email: user.email } },
+      { 
+        user: { 
+          id: user.id, 
+          name: user.name, 
+          email: user.email,
+          profile_picture: userData?.profile_picture || "",
+        } 
+      },
       { status: 200 }
     );
   } catch {

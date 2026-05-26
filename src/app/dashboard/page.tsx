@@ -351,7 +351,7 @@ export default function DashboardPage() {
             </div>
             <div className="pt-2 border-t border-white/5 flex justify-between items-center text-xs text-zinc-500">
               <span>Estado: <span className="text-[#0052FF] font-semibold">Busqueda activa</span></span>
-              <span>ID: #{user.id.substring(0, 6)}</span>
+              <span>ID: #{user.id?.substring(0, 6) || "N/A"}</span>
             </div>
           </div>
         </div>
