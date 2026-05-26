@@ -188,7 +188,7 @@ export default function SettingsPage() {
     <>
       <Navbar />
 
-      <main className="relative h-[calc(100vh-64px)] overflow-y-auto bg-[#050505] pt-10 pb-16 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto">
+      <main className="relative min-h-screen bg-[#050505] pt-28 pb-16 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto">
         {/* Ambient background glows */}
         <div className="absolute top-1/4 left-1/4 w-[350px] h-[350px] bg-[#0052FF]/10 rounded-full blur-[100px] pointer-events-none -z-10" />
         <div className="absolute bottom-1/4 right-1/4 w-[350px] h-[350px] bg-[#8B5CF6]/10 rounded-full blur-[100px] pointer-events-none -z-10" />
@@ -226,7 +226,7 @@ export default function SettingsPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             
             {/* Left Col: Avatar Preview */}
-            <div className="glass-card border border-white/10 rounded-3xl p-6 bg-[#09090b]/80 backdrop-blur-2xl flex flex-col items-center justify-center text-center">
+            <div className="md:self-start glass-card border border-white/10 rounded-3xl p-6 bg-[#09090b]/80 backdrop-blur-2xl flex flex-col items-center text-center">
               <h3 className="text-sm font-semibold text-zinc-400 mb-4 uppercase tracking-wider">
                 Foto de Perfil
               </h3>
@@ -468,7 +468,7 @@ export default function SettingsPage() {
               </div>
 
               {/* Submit CTA */}
-              <div className="sticky bottom-0 mt-8 -mx-6 -mb-6 sm:-mx-8 sm:-mb-8 p-4 sm:p-6 bg-[#09090b]/90 backdrop-blur-xl border-t border-white/10 flex justify-end rounded-b-3xl z-30 shadow-[0_-10px_30px_rgba(0,0,0,0.5)]">
+              <div className="mt-6 flex justify-end">
                 <button
                   type="submit"
                   disabled={saving}
