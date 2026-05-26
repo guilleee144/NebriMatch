@@ -1,9 +1,11 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { SectionWrapper } from "../SectionWrapper";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
+import { DownloadAppModal } from "../DownloadAppModal";
 
 export function Stats() {
   const stats = [
@@ -40,6 +42,8 @@ export function Stats() {
 
 export function CTA() {
   const { user } = useAuth();
+  const [isDownloadModalOpen, setIsDownloadModalOpen] = useState(false);
+
   return (
     <SectionWrapper id="cta" className="relative overflow-hidden text-center">
       {/* Background Effect */}
@@ -72,12 +76,19 @@ export function CTA() {
             </Link>
           )}
           <button
+            onClick={() => setIsDownloadModalOpen(true)}
             className="px-8 py-4 glass text-white font-medium rounded-full hover:bg-white/10 transition-colors text-center"
           >
             Descargar App
           </button>
         </div>
       </div>
+
+      <DownloadAppModal 
+        isOpen={isDownloadModalOpen} 
+        onClose={() => setIsDownloadModalOpen(false)} 
+      />
     </SectionWrapper>
   );
 }
+
