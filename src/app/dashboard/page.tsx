@@ -25,7 +25,7 @@ const MOCK_PROFILES: MockProfile[] = [
     empresa_centro_estudios: "Nebula Labs",
     edad: 27,
     ciudad: "Madrid",
-    profile_picture: ""
+    profile_picture: "/img_profile/sofia.jpg"
   },
   {
     name: "Carlos Mendoza",
@@ -34,7 +34,7 @@ const MOCK_PROFILES: MockProfile[] = [
     empresa_centro_estudios: "Freelance",
     edad: 24,
     ciudad: "Barcelona",
-    profile_picture: ""
+    profile_picture: "/img_profile/carlos.png"
   },
   {
     name: "Laura Jiménez",
@@ -43,7 +43,7 @@ const MOCK_PROFILES: MockProfile[] = [
     empresa_centro_estudios: "Universidad Complutense",
     edad: 23,
     ciudad: "Valencia",
-    profile_picture: ""
+    profile_picture: "/img_profile/laura.png"
   },
   {
     name: "Alejandro Torres",
@@ -52,7 +52,7 @@ const MOCK_PROFILES: MockProfile[] = [
     empresa_centro_estudios: "Google",
     edad: 30,
     ciudad: "Sevilla",
-    profile_picture: ""
+    profile_picture: "/img_profile/alejandro.png"
   },
   {
     name: "Marina López",
@@ -61,7 +61,7 @@ const MOCK_PROFILES: MockProfile[] = [
     empresa_centro_estudios: "IE Business School",
     edad: 32,
     ciudad: "Madrid",
-    profile_picture: ""
+    profile_picture: "/img_profile/marina.png"
   }
 ];
 
